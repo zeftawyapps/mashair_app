@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "121623610036",
+    "project_id": "mashair-dev",
+    "storage_bucket": "mashair-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:121623610036:android:832d8d7563ab573b0e0de1",
+        "android_client_info": {
+          "package_name": "com.zeftawyapps.mashair"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "121623610036-01fgravd6gni33uvksiv3985o0ij8bk4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApePYhwMJwK13XnoXkgBp8IqB3YtGgcog"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "121623610036-01fgravd6gni33uvksiv3985o0ij8bk4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

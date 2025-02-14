@@ -1,0 +1,8 @@
+{
+"baseUrls": {
+
+     "remote_dev": "https://europe-west3-mashair-dev.cloudfunctions.net/apiCommerce",
+    "local": "http://127.0.0.1:5001/mashair-dev/europe-west3/apiCommerce"
+
+}
+}

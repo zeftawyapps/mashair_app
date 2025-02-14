@@ -1,0 +1,17 @@
+{
+"firebaseConfig": {
+    "dev": {
+        "apiKey": "AIzaSyBfhtv-quS_-1yunyad8lNNuoP_IBo9Ufo",
+        "authDomain": "mashair-dev.firebaseapp.com",
+        "projectId": "mashair-dev",
+        "storageBucket": "mashair-dev.appspot.com",
+        "messagingSenderId": "121623610036",
+        "appId": "1:121623610036:web:947debe608443d620e0de1",
+        "measurementId": "G-GK6Z1NNFMT"
+    } ,
+    "prod": {
+         
+    }
+
+}
+}
