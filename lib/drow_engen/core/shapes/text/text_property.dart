@@ -83,7 +83,7 @@ class _TextPropertyState extends State<TextProperty> {
     y = newShape!.yPos;
     maxFontSize = newShape!.maxFontSize;
     minFontSize = newShape!.minFontSize;
-    isContstraint = newShape!.isContstraint;
+    isContstraint = newShape!.isLayoutContstraint;
     List<TextStyle> _fonts = FontsList().getList();
     selectedStyle = _fonts.first;
 
@@ -108,7 +108,7 @@ class _TextPropertyState extends State<TextProperty> {
             y = newShape!.yPos;
             maxFontSize = newShape!.maxFontSize;
             minFontSize = newShape!.minFontSize;
-            isContstraint = newShape!.isContstraint;
+            isContstraint = newShape!.isLayoutContstraint;
             textDirection = newShape!.textDirection;
           }
           // selectedStyle = _fonts.firstWhere((element) => element.fontFamily == newShape!.fontFamily);
@@ -922,7 +922,7 @@ class _TextPropertyState extends State<TextProperty> {
           layoutHeight: layoutHeight,
           layoutWidth: layoutWidth,
           textDirection: textDirection,
-          isContstraint: isContstraint,
+          isLayoutContstraint: isContstraint,
           xPos: x,
           yPos: y);
     });

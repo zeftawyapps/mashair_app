@@ -26,6 +26,10 @@ final class PrintInitialEvent extends MainEvent {
   final Layout layout;
   PrintInitialEvent({required this.layout});
 }
+final class MainDesposed  extends MainEvent {
+
+  MainDesposed();
+}
 
 
 

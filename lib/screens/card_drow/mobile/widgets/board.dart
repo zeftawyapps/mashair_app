@@ -57,16 +57,7 @@ class _AppMobliePaintBoardState extends State<AppMobliePaintBoard> {
 
                 });
               }
-              // do something
 
-              if (state is MainLoaded){
-                TapDownDetails   details = TapDownDetails(globalPosition: Offset(0, 0));
-                bloc.add(OnPanStart(details: details));
-                setState(() {
-
-                });
-
-              }
             },
                 child:  CustomPaint(
                   size:   Size( width,  height),

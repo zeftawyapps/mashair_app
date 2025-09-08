@@ -21,19 +21,7 @@ class Painter extends CustomPainter {
     Paint paint = Paint();
     for (var shape in Shaps) {
       shape.drawShape(canvas);
-      if (shape.isSelected) {
-        RecShap recShap = shape as RecShap;
-        paint.color = recShap.isResizing ? Color(0xffd290fd): shape.isRotating?Colors.red : Color(0xffd290fd);
-        paint.style = PaintingStyle.stroke;
-        paint.strokeWidth = 1;
 
-        canvas.drawRect(
-            Rect.fromPoints(
-                Offset(recShap.xPos, recShap.yPos),
-                Offset(recShap.xPos + recShap.width,
-                    recShap.yPos + recShap.height)),
-            paint);
-      }
 
     }
 

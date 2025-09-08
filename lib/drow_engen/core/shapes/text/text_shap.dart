@@ -30,7 +30,9 @@ class TextShape extends RecShap {
   double _maxHeight = 100;
   double maxFontSize = 70;
   double minFontSize = 10;
-  bool isContstraint = false;
+  bool isSelfContstraint = false;
+  bool isLayoutContstraint  = true ;
+
   Widget? myProperty;
   int textAlignment = 0;
   int _textDirection = 1;
@@ -78,6 +80,12 @@ class TextShape extends RecShap {
     double h = textPainter.height;
     double maxPossX = xPos + w;
     double maxPossY = yPos + h;
+    if (isSelfContstraint) {
+      layoutWidth = width + xPos;
+      layoutHeight = height+ yPos;
+    }
+
+
     _maxWith = layoutWidth;
     _maxHeight = layoutHeight;
     if (maxPossX > layoutWidth) {
@@ -85,13 +93,57 @@ class TextShape extends RecShap {
     } else {
       _maxWith = w;
     }
-    if (isContstraint) {
-      textPainter.layout(maxWidth: _maxWith, minWidth: 0);
+
+
+    if (isLayoutContstraint|| isSelfContstraint) {
+      textPainter.layout(maxWidth: _maxWith, minWidth: 0
+        ,
+      );
+      double hh = textPainter.height;
+      while(hh > layoutHeight){
+        _fontSize = _fontSize - 1;
+        textStyle = TextStyle(
+          color: _color,
+          fontSize: _fontSize > 50 ? 50 : _fontSize,
+          fontFamily: fontFamily,
+          background: Paint()..color = backgroundColor,
+          fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+          fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
+          decoration: isUnderline ? TextDecoration.underline : TextDecoration.none,
+        );
+        textPainter = TextPainter(
+          text: TextSpan(
+            text: text,
+            style: textStyle,
+          ),
+          textAlign: _setTextAlign,
+          textDirection: _settextDirection,
+        );
+        textPainter.layout(maxWidth: _maxWith, minWidth: 0
+          ,
+        );
+
+        hh = textPainter.height;
+      }
+
+
+
+
     }else {
+
+
       textPainter.layout();
     }
-    width = textPainter.width;
-    height = textPainter.height;
+    if (!isSelfContstraint) {
+      width = textPainter.width ;
+      height = textPainter.height  ;
+    }else {
+      if (fontSize < minFontSize) {
+        width = textPainter.width ;
+        height = textPainter.height  ;
+      }
+
+    }
     textPainter.paint(canvas, Offset(xPos, yPos));
 
     // add size point
@@ -117,7 +169,8 @@ class TextShape extends RecShap {
     double? width,
     double? height,
     String? fontFamily,
-    bool isContstraint = false,
+    bool isLayoutContstraint = false,
+    bool isSalfContstraint = false ,
   }) {
     TextShape x = TextShape(
       text: text ?? this.text,
@@ -137,8 +190,8 @@ class TextShape extends RecShap {
       ..layoutHeight = layoutHeight
       ..textAlignment = textAlignment ?? this.textAlignment
       ..isUnderline = isUnderline ?? this.isUnderline
-      ..isContstraint = isContstraint;
-
+      ..isSelfContstraint = isSalfContstraint
+      ..isLayoutContstraint = isLayoutContstraint;
     print(x.toString());
     return x;
   }
@@ -173,9 +226,10 @@ class TextShape extends RecShap {
       ..isBold = json['isBold']
       ..isItalic = json['isItalic']
       ..isUnderline = json['isUnderline']
+      ..isSelfContstraint = json['isSelfContstraint'] ??false
       ..textDirection = int.tryParse(json['textDirectionData'] ?? '1') ?? 1
       ..fontFamily = json['fontFamily'] ?? 'Roboto'
-      ..isContstraint = json['isContstraint'] ?? false
+      ..isLayoutContstraint = json['isContstraint'] ?? false
       ..textAlignment = int.tryParse(json['textAlignment'] ?? '0') ?? 0;
 
   }
@@ -188,7 +242,7 @@ class TextShape extends RecShap {
   }
 
   bool _stopResize(double w, double h) {
-    if (!isContstraint)  {   return false;}
+    if (!isLayoutContstraint)  {   return false;}
 
     double maxPossX = xPos + w;
     double maxPossY = yPos + h;
@@ -253,7 +307,8 @@ class TextShape extends RecShap {
     'textDirection': _textDirection,
     'backgroundColor': backgroundColor.value,
     'fontSize': _fontSize,
-    'isContstraint': isContstraint,
+    'isContstraint': isLayoutContstraint,
+    'isSelfContstraint': isSelfContstraint,
     'textDirection': _textDirection.toString(),
   };
   @override
@@ -267,74 +322,144 @@ class TextShape extends RecShap {
   @override
   void onPointLiftUpPanUpdate(DragUpdateDetails details) {
 
-    //
-    sizePointLeftUp.onPanUpdate(details);
-    bool isStop = _stopResize(width, height);
-    double w = !isStop ? sizePointLeftUp.rewidth : 0;
-    double h = !isStop ? sizePointLeftUp.reheight : 0;
-    width = width + w;
-    height = height - h;
-    xPos = xPos + w;
-    fontSize = fontSize - h / 2;
-    if (fontSize > maxFontSize) {
-      fontSize = maxFontSize;
+    if (isSelfContstraint){
+      super.onPointLiftUpPanUpdate(details);
+      return;
     }
-    if (fontSize <  minFontSize) {
-      fontSize = minFontSize;
+    else {
+      bool stop ;
+      if (fontSize > maxFontSize) {
+        fontSize = maxFontSize;
+        stop = true;
+      }else {
+        stop = false;
+      }
+      if (fontSize < minFontSize) {
+        fontSize = minFontSize;
+        stop = true;
+      }else {
+        stop = false;
+      }
+
+      sizePointLeftUp.onPanUpdate(details);
+      bool isStop = _stopResize(width, height);
+      double w = !isStop ? sizePointLeftUp.rewidth : 0;
+      double h = !isStop ? sizePointLeftUp.reheight : 0;
+      width = width + w;
+      height = height - h;
+      fontSize = fontSize - h / 6;
+      super.onPointLiftUpPanUpdate(details);
+      // if (stop ) {
+      //   xPos = xPos + w/8;
+      //   yPos = yPos + h/2;
+      // }
+
     }
   }
 
   @override
   void onPointLiftDownPanUpdate(DragUpdateDetails details) {
-    sizePointLeftDown.onPanUpdate(details);
-    bool isStop = _stopResize(width, height);
-    double w = !isStop ? sizePointLeftDown.rewidth : 0;
-    double h = !isStop ? sizePointLeftDown.reheight : 0;
-    width = width + w;
-    height = height + h;
-    fontSize = fontSize + h / 2;
-    xPos = xPos + w;
-    if (fontSize > maxFontSize) {
-      fontSize =  maxFontSize;
+    if (isSelfContstraint){
+      super.onPointLiftDownPanUpdate(details);
+      return;
     }
-    if (fontSize < minFontSize) {
-      fontSize = minFontSize ;
+    else
+    {
+      bool stop ;
+      if (fontSize > maxFontSize) {
+        fontSize = maxFontSize;
+        stop = true;
+      }else {
+        stop = false;
+      }
+      if (fontSize < minFontSize) {
+        fontSize = minFontSize;
+        stop = true;
+      }else {
+        stop = false;
+      }
+
+      sizePointLeftDown.onPanUpdate(details);
+      bool isStop = _stopResize(width, height);
+      double w = !isStop ? sizePointLeftDown.rewidth : 0;
+      double h = !isStop ? sizePointLeftDown.reheight : 0;
+      width = width + w;
+      height = height + h;
+      fontSize = fontSize + h / 3;
+      // if (stop) {
+      //   xPos = xPos + w/10;
+      // }
+      super.onPointLiftDownPanUpdate(details);
     }
   }
 
   @override
   void onPointRightUpPanUpdate(DragUpdateDetails details) {
+    if (isSelfContstraint){
+      super.onPointRightUpPanUpdate(details);
+      return;
+    }
+    bool stop ;
+    if (fontSize > maxFontSize) {
+      fontSize =  maxFontSize;
+      stop = true;
+    }else {
+      stop = false;
+    }
+    if (fontSize < minFontSize) {
+      fontSize = minFontSize ;
+    }else {
+      stop = false;
+    }
+
     sizePointLeftDown.onPanUpdate(details);
     bool isStop = _stopResize(width, height);
     double w = !isStop ? sizePointLeftDown.rewidth : 0;
     double h = !isStop ? sizePointLeftDown.reheight : 0;
     width = width - w;
     height = height - h;
-    fontSize = fontSize - h / 2;
-    xPos = xPos - w;
-    if (fontSize > maxFontSize) {
-      fontSize =  maxFontSize;
-    }
-    if (fontSize < minFontSize) {
-      fontSize = minFontSize ;
-    }
+    fontSize = fontSize - h / 3;
+    // if (stop ) {
+    //   xPos = xPos - w/10;
+    // }
+    super.onPointRightUpPanUpdate(details);
   }
 
   @override
   void onPointRightDownPanUpdate(DragUpdateDetails details) {
-    sizePointRightDown.onPanUpdate(details);
-    bool isStop = _stopResize(width, height);
-    double w = !isStop ? sizePointRightDown.rewidth : 0;
-    double h = !isStop ? sizePointRightDown.reheight : 0;
-    width = width - w * 2;
-    height = height + h * 2;
-    fontSize = fontSize + h / 3;
-    xPos = xPos - w/2;
-    if (fontSize > maxFontSize) {
-      fontSize = maxFontSize ;
-    }
-    if (fontSize < minFontSize) {
-      fontSize = minFontSize;
+    if (isSelfContstraint){
+      super.onPointRightDownPanUpdate(details);
+
+    }else {
+
+      bool stop ;
+      if (fontSize > maxFontSize) {
+        fontSize = maxFontSize;
+        stop = true;
+      }else {
+        stop = false;
+      }
+      if (fontSize < minFontSize) {
+        fontSize = minFontSize;
+        stop = true;
+      }else {
+        stop = false;
+      }
+
+      sizePointRightDown.onPanUpdate(details);
+      bool isStop = _stopResize(width, height);
+      double w = !isStop ? sizePointRightDown.rewidth : 0;
+      double h = !isStop ? sizePointRightDown.reheight : 0;
+      width = width - w * 2;
+      height = height + h * 2;
+      fontSize = fontSize + h / 3;
+      super.onPointRightDownPanUpdate(details);
+      // if (stop){
+      //   xPos =    xPos - w/8;
+      //
+      // }
+
     }
   }
 }
+

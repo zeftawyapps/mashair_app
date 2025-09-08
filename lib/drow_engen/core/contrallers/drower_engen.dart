@@ -13,7 +13,13 @@ class DrowerEngen {
   DrowerEngen() {
   }
 
-
+//despose
+  void despose() {
+    shapes = [];
+    selectedShapeIndex = -1;
+    selectedShape = null;
+    layout = Layout(width: 300, height: 400);
+  }
 
   int getShapeIndex(BaseShape shape) {
     return shapes.indexOf(shape);
@@ -62,10 +68,8 @@ class DrowerEngen {
   }
   BaseShape reChangeShapePossition(
       RecShap myShape, RecShap lasShape, int index) {
-    // double x = lasShape.xPos + 10;
-    // double y = lasShape.yPos + 10;
-    double x = 50 ;
-    double y = 50 ;
+    double x = lasShape.xPos + 10;
+    double y = lasShape.yPos + 10;
     myShape.xPos = x;
     myShape.yPos = y;
     return myShape;

@@ -43,7 +43,10 @@ class DrawEngineMainBloc extends Bloc<MainEvent, MainState> {
       emit(MainLoading(layout: engen.layout));
       emit(ShapeDraw(shapes: engen.shapes, layout: engen.layout));
     });
-
+    on<MainDesposed>((event, emit) {
+      register.despose();
+      engen.despose();
+    });
     on<OnNewShapeAdded>((event, emit) {
       BaseShape shape = event.shape;
       List<BaseShape> newShapes = engen.onShapeClick(shape);
@@ -88,10 +91,11 @@ class DrawEngineMainBloc extends Bloc<MainEvent, MainState> {
           emit(ShapeSelected(shape: item, index: engen.selectedShapeIndex));
           emit(ShapeSelectedFromPanel(shape: item, index: engen.selectedShapeIndex));
           emit(ShapeDraw(shapes: engen.shapes, layout: engen.layout));
+
           break;
         }else {
           emit(ShapeUnSelectedFromPanel());
-
+          emit(ShapeDraw(shapes: engen.shapes, layout: engen.layout));
         }
       }
     });
@@ -111,17 +115,12 @@ class DrawEngineMainBloc extends Bloc<MainEvent, MainState> {
         engen.selectedShape = item;
         engen.selectedShapeIndex = engen.getShapeIndex(item);
         emit(ShapeSelected(shape: item, index: engen.selectedShapeIndex));
-        // emit(ShapeSelectedFromPanel(shape: item, index: engen.selectedShapeIndex));
-       emit(ShapeSelectedFromPanel(shape: item, index: engen.selectedShapeIndex)) ;
+        emit(ShapeSelectedFromPanel(shape: item, index: engen.selectedShapeIndex));
         emit(ShapeDraw(shapes: engen.shapes, layout: engen.layout));
       }
       engen.selectedShape = engen.shapes.first;
       engen.selectedShapeIndex = 0;
       emit(ShapeDraw(shapes: engen.shapes, layout: engen.layout));
-    // emit(MainLoaded());
-    emit(ShapeUnSelectedFromPanel());
-
-
     });
     on<OnLayerDelete>((event, emit) {
       BaseShape shape = event.shape;
@@ -152,7 +151,6 @@ class DrawEngineMainBloc extends Bloc<MainEvent, MainState> {
         emit(ShapeDraw(shapes: engen.shapes, layout: engen.layout));
       }
     });
-
     on<SaveFile>((event, emit) async {
       Layout l = engen.layout;
       Size size = Size(l.width, l.height);

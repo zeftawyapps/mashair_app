@@ -389,7 +389,6 @@ if (!widget.canUseAi) {
                     _buttonState = 0;
                     setState(() {});
                   }
-
                   if (state is ShapeDeleted) {
                     Selectedshape = null;
                     _buttonState = 0;

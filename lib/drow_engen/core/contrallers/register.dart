@@ -1,7 +1,4 @@
 import 'dart:convert';
-
-
-
 import '../constants.dart';
 import '../interfaces/base_shap.dart';
 import '../interfaces/rec_shaps.dart';
@@ -11,7 +8,6 @@ import '../shapes/network_image/image_shap.dart';
 import '../shapes/rectangel/rectangel_shap.dart';
 import '../shapes/text/text_shap.dart';
 import 'drower_engen.dart';
-
 class Register {
   DrowerEngen engen;
   List<BaseShape> shapes = [];
@@ -36,6 +32,10 @@ class Register {
       },
       "$shapePropertiesKey": shapeProperties
     };
+    _loger();
+  }
+  void _onDesposed() {
+    mainReget = {};
     _loger();
   }
 
@@ -72,18 +72,18 @@ class Register {
     mainReget = data;
     // get layout
     Map<String, dynamic> layout = mainReget["$layoutKey"];
-  var  w = layout[layoutWidthKey];
-  var h = layout[layoutHeightKey];
-if (w is int) {
+    var  w = layout[layoutWidthKey];
+    var h = layout[layoutHeightKey];
+    if (w is int) {
       w = w.toDouble();
     }
-if (h is int) {
+    if (h is int) {
       h = h.toDouble();
     }
     engen.layout.width =  w.toDouble();
     engen.layout.height =  h.toDouble();
     // get shapes
-   var  shapes = mainReget["$shapePropertiesKey"]  ;
+    var  shapes = mainReget["$shapePropertiesKey"]  ;
     List<BaseShape> newShapes = [];
     for (var shape in shapes) {
       switch (shape["type"]) {
@@ -96,10 +96,10 @@ if (h is int) {
         case  ShapeType.image:
           newShapes.add(ImageShape.fromJson(shape));
           break;
-          case ShapeType.avatarImage:
+        case ShapeType.avatarImage:
           newShapes.add(AvatarImageShape.fromJson(shape));
           break;
-          case ShapeType.networkImage:
+        case ShapeType.networkImage:
           newShapes.add(NetWorkImageShape.fromJson(shape));
           break;
 
@@ -111,6 +111,10 @@ if (h is int) {
     _loger();
     return engen;
   }
-
+// despose
+  void despose() {
+    engen.despose();
+    _onDesposed();
+  }
 
 }
